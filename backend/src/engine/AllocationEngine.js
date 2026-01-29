@@ -14,7 +14,6 @@ export class AllocationEngine {
         this.requeuePatient(patient);
         break;
       }
-      console.log(`Allocating Patient ${patient.name} to Slot ${slot.id}`);
 
       slot.assignedPatients.push(patient);
       patient.status = "ASSIGNED";
@@ -52,4 +51,18 @@ export class AllocationEngine {
       this.store.queue.regular.unshift(patient);
     }
   }
+
+  handleNoShow(patientId) {
+    for(const slot of this.store.slots.values()){
+      const index = slot.assignedPatients.findIndex(p => p.id === patientId);
+      if(index !== -1){
+        slot.assignedPatients.splice(index, 1);
+        break;
+      }
+
+    }
+    this.process();
+    
+  }
+
 }
